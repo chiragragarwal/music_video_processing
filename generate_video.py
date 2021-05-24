@@ -26,11 +26,6 @@ Requirements:
 __author__ = "Chirag Agarwal, London, 24/05/2021"
 
 FONT = 'Helvetica-Bold'
-PERFORMER_NAME = 'Chirag Agarwal'
-PERFORMER_LOCATION = 'London'
-COMPOSITION = 'Jago Mohan Pyare'
-RAAG = 'Bhairav'
-TAAL = 'Teental'
 VIDEO_SIZE = (1920, 1080)
 WIDTH, HEIGHT = VIDEO_SIZE
 TITLE_CARD_DURATION = 5 # seconds
