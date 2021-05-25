@@ -9,6 +9,7 @@ Automated title card generation and stitching of different music videos. This wa
         * Composition
         * Raag
         * Taal
+        * Description
     - File should be named `Performer Data.xlsx`
     - A sample file is available in this repo
 - Each performer should name their file exactly like this:
