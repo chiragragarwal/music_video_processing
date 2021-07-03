@@ -45,7 +45,8 @@ def create_single_title_card(performer_data):
     """
     name = performer_data['Name']
     location = performer_data['Location']
-    title_card_path = '%s/%s_%s_titlecard.mp4' % (TITLE_CARDS_FOLDER, name.lower(), location.lower())
+    video = get_video_filename(performer_data['Video File Name'].lower(), ext=False)
+    title_card_path = '%s/%s_titlecard.mp4' % (TITLE_CARDS_FOLDER, video)
 
     # Return if the title card was already created
     if os.path.exists(title_card_path):
@@ -107,6 +108,15 @@ def create_title_cards():
     pool = mp.Pool(mp.cpu_count())
     pool.map(create_single_title_card, PERFORMER_DATA)
 
+def get_video_filename(filename, ext=True):
+    """
+    Return video filename with extension if it doesn't exist
+    """
+    f = os.path.splitext(filename)
+    if not ext:
+        return f[0]
+    return '%s%s' % (f[0], f[1] or '.mp4')
+
 def convert_portrait_to_landscape(video):
     """
     Note: Not being used currently but keeping for future in case we need it.
@@ -165,8 +175,8 @@ def get_final_videos(title_cards=True, converted=False):
     :param bool converted: Add the suffix "_converted" to filenames if True
     """
     all_videos = []
-    for peformer in PERFORMER_DATA:
-        video = '%s_%s.mp4' % (peformer['Name'], peformer['Location'])
+    for performer in PERFORMER_DATA:
+        video = get_video_filename(performer['Video File Name'])
         filename, ext = os.path.splitext(video)
         title_card = '%s/%s_titlecard%s' % (TITLE_CARDS_FOLDER, filename, ext)
         if converted:
