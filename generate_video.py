@@ -65,8 +65,10 @@ def create_single_title_card(performer_data):
 
     # Description
     # Divide the description into lines of 9 words each
-    desc = performer_data['Description'].split()
     descriptions = []
+    raw_description = performer_data['Description']
+    if raw_description and raw_description != '-':
+        desc = raw_description.split()
     words_per_line = 9
     pos = HEIGHT/3 + 40
     for i in range(0, len(desc), words_per_line):
@@ -76,19 +78,39 @@ def create_single_title_card(performer_data):
         descriptions.append(d)
 
     # Composition name
-    composition = TextClip(performer_data['Composition'].title(), color='white', font=FONT, fontsize=80)
+    composition = None
+    raw_composition = performer_data['Composition']
+    if raw_composition and raw_composition != '-':
+        composition = TextClip(raw_composition.title(), color='white', font=FONT, fontsize=80)
     composition = composition.set_position(("center", HEIGHT/2 + 80))
 
     # Raag
-    raag = TextClip('Raag %s' % performer_data['Raag'].title(), color='white', font=FONT, fontsize=70)
+    raag = None
+    raw_raag = performer_data['Raag']
+    if raw_raag and raw_raag != '-':
+        raag = TextClip('Raag %s' % raw_raag.title(), color='white', font=FONT, fontsize=70)
     raag = raag.set_position(("center", HEIGHT/2 + 190))
 
     # Taal
-    taal = TextClip('(%s)' % performer_data['Taal'].title(), color='white', font=FONT, fontsize=60)
+    taal = None
+    raw_taal = performer_data['Taal']
+    if raw_taal and raw_taal != '-':
+        taal = TextClip('(%s)' % raw_taal.title(), color='white', font=FONT, fontsize=60)
     taal = taal.set_position(("center", HEIGHT/2 + 280))
 
     # Composite all text clips to make a video
-    cvc_title = CompositeVideoClip([name_clip, location_clip] + descriptions + [composition, raag, taal], size=VIDEO_SIZE)
+    final_clips = [name_clip, location_clip]
+    if descriptions:
+        final_clips.extend(descriptions)
+    if composition:
+        final_clips.append(composition)
+    if raag:
+        final_clips.append(raag)
+    if taal:
+        final_clips.append(taal)
+
+    # cvc_title = CompositeVideoClip([name_clip, location_clip] + descriptions + [composition, raag, taal], size=VIDEO_SIZE)
+    cvc_title = CompositeVideoClip(final_clips, size=VIDEO_SIZE)
     cvc_title = cvc_title.set_duration(TITLE_CARD_DURATION).set_fps(FPS)
 
     cvc_title.write_videofile(title_card_path,
