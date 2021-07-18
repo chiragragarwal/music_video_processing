@@ -45,8 +45,8 @@ def create_single_title_card(performer_data):
     """
     name = performer_data['Name']
     location = performer_data['Location']
-    video = get_video_filename(performer_data['Video File Name'].lower(), ext=False)
-    title_card_path = '%s/%s_titlecard.mp4' % (TITLE_CARDS_FOLDER, video)
+    video, ext = os.path.splitext(performer_data['Video File Name'].lower())
+    title_card_path = '%s/%s_titlecard%s' % (TITLE_CARDS_FOLDER, video, ext)
 
     # Return if the title card was already created
     if os.path.exists(title_card_path):
@@ -69,34 +69,34 @@ def create_single_title_card(performer_data):
     raw_description = performer_data['Description']
     if raw_description and raw_description != '-':
         desc = raw_description.split()
-    words_per_line = 9
-    pos = HEIGHT/3 + 40
-    for i in range(0, len(desc), words_per_line):
-        d = TextClip(' '.join(desc[i:i+words_per_line]), color='white', font=FONT, fontsize=45)
-        d = d.set_position(("center", pos))
-        pos += 60
-        descriptions.append(d)
+        words_per_line = 9
+        pos = HEIGHT/3 + 40
+        for i in range(0, len(desc), words_per_line):
+            d = TextClip(' '.join(desc[i:i+words_per_line]), color='white', font=FONT, fontsize=45)
+            d = d.set_position(("center", pos))
+            pos += 60
+            descriptions.append(d)
 
     # Composition name
     composition = None
     raw_composition = performer_data['Composition']
     if raw_composition and raw_composition != '-':
         composition = TextClip(raw_composition.title(), color='white', font=FONT, fontsize=80)
-    composition = composition.set_position(("center", HEIGHT/2 + 80))
+        composition = composition.set_position(("center", HEIGHT/2 + 80))
 
     # Raag
     raag = None
     raw_raag = performer_data['Raag']
     if raw_raag and raw_raag != '-':
         raag = TextClip('Raag %s' % raw_raag.title(), color='white', font=FONT, fontsize=70)
-    raag = raag.set_position(("center", HEIGHT/2 + 190))
+        raag = raag.set_position(("center", HEIGHT/2 + 190))
 
     # Taal
     taal = None
     raw_taal = performer_data['Taal']
     if raw_taal and raw_taal != '-':
         taal = TextClip('(%s)' % raw_taal.title(), color='white', font=FONT, fontsize=60)
-    taal = taal.set_position(("center", HEIGHT/2 + 280))
+        taal = taal.set_position(("center", HEIGHT/2 + 280))
 
     # Composite all text clips to make a video
     final_clips = [name_clip, location_clip]
@@ -218,7 +218,8 @@ def convert_single_video(filename):
     :param str filename: Name of the file to be converted
     """
     basename = os.path.basename(filename)
-    video_path = '%s/%s_converted.mp4' % (CONVERTED_VIDEOS_FOLDER, os.path.splitext(basename)[0].lower())
+    basename, ext = os.path.splitext(basename)
+    video_path = '%s/%s_converted%s' % (CONVERTED_VIDEOS_FOLDER, basename.lower(), ext)
 
     # Return if the video was already converted
     if os.path.exists(video_path):
